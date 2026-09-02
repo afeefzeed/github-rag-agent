@@ -1,12 +1,23 @@
+Yep 🔥 Let's finish it properly.
+
+We'll do it **one step at a time** so nothing breaks.
+
+### Step 1 — Upgrade the README
+
+Open **`README.md`** in Codespaces.
+
+Delete everything inside it and paste this:
+
+````markdown
 # 🔎 GitHub RAG Agent
 
 An agentic RAG application that uses semantic search and the GitHub API to find relevant GitHub repositories and retrieve their latest commit history.
 
-🚀 Live Demo
+## 🚀 Live Demo
 
 https://git-rag-agent.streamlit.app/
 
-📌 What It Does
+## 📌 What It Does
 
 The application allows users to ask natural-language questions such as:
 
@@ -22,7 +33,7 @@ The agent:
 
 ## 🏗️ Architecture
 
-
+```text
 User
   ↓
 Streamlit UI
@@ -40,9 +51,9 @@ Latest 5 Commits
 OpenAI
   ↓
 Final Answer
+````
 
-
-🧠 Technologies
+## 🧠 Technologies
 
 * Python
 * Streamlit
@@ -52,38 +63,57 @@ Final Answer
 * OpenAI API
 * GitHub REST API
 
-🛠️ Project Structure
+## 🛠️ Project Structure
 
+```text
 github-rag-agent/
 │
-├── app.py              # Streamlit frontend
-├── backend.py          # RAG pipeline and LangGraph agent
-├── requirements.txt    # Python dependencies
-├── .gitignore          # Ignored files and secrets
-└── README.md           # Project documentation
+├── app.py
+│   └── Streamlit frontend
+│
+├── backend.py
+│   ├── OpenAI integration
+│   ├── ChromaDB vector store
+│   ├── RAG repository search
+│   ├── GitHub API integration
+│   ├── Commit retrieval tool
+│   └── LangGraph agent workflow
+│
+├── requirements.txt
+│   └── Python dependencies
+│
+├── .gitignore
+│   └── Secrets and local files
+│
+└── README.md
+    └── Project documentation
+```
 
+## 🔍 Example Queries
 
-🔍 Example Queries
-
-
+```text
 Find a vector database for AI applications and show me its 5 most recent commits.
+```
 
+```text
 Find a framework for building AI agents and give me its GitHub URL.
+```
 
+```text
 Find a library for generating text embeddings and show me its 5 most recent commits.
+```
 
-
- 🔐 Environment Variable
+## 🔐 Environment Variable
 
 The application requires an OpenAI API key.
 
-
+```text
 OPENAI_API_KEY
+```
 
 The API key should be stored as a secret/environment variable and should never be committed to the repository.
 
-
-▶️ Run Locally
+## ▶️ Run Locally
 
 Install dependencies:
 
@@ -103,10 +133,10 @@ Run the application:
 streamlit run app.py
 ```
 
-🎯 Project Goal
+## 🎯 Project Goal
 
 This project demonstrates how Retrieval-Augmented Generation (RAG), agentic workflows, vector databases, and external APIs can be combined into a practical AI application.
 
-👨‍💻 Author
+## 👨‍💻 Author
 
 Afeef Zeed
