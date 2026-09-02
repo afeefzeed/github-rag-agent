@@ -1,13 +1,3 @@
-Yep 🔥 Let's finish it properly.
-
-We'll do it **one step at a time** so nothing breaks.
-
-### Step 1 — Upgrade the README
-
-Open **`README.md`** in Codespaces.
-
-Delete everything inside it and paste this:
-
 ````markdown
 # 🔎 GitHub RAG Agent
 
