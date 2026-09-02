@@ -52,6 +52,7 @@ Final Answer
 * ChromaDB
 * OpenAI API
 * GitHub REST API
+<img width="1536" height="1024" alt="ChatGPT Image Sep 2, 2026, 11_43_36 PM" src="https://github.com/user-attachments/assets/589c52ab-9981-471c-83f3-f050b76ac433" />
 
 ## 🛠️ Project Structure
 
