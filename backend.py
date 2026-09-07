@@ -5,8 +5,10 @@ from typing import TypedDict, Annotated
 
 from langchain_core.documents import Document
 from langchain_core.tools import StructuredTool
-from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain_chroma import Chroma
+from ingestion.search_code import search_code_tool
+from langchain_openai import OpenAIEmbeddings, ChatOpenAI
+from ingestion.run_ingestion import ensure_code_index
 
 from langgraph.graph import StateGraph, START
 from langgraph.graph.message import add_messages
@@ -24,6 +26,7 @@ if not OPENAI_API_KEY:
         "OPENAI_API_KEY is not set. "
         "Add it as an environment variable in Codespaces."
     )
+ensure_code_index()
 
 # =========================
 # OpenAI Models
@@ -270,6 +273,7 @@ search_repositories = StructuredTool.from_function(
 
 tools = [
     search_repositories,
+    search_code_tool,
     get_repository_commits
 ]
 
