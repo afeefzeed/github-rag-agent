@@ -13,8 +13,9 @@ from ingestion.run_ingestion import ensure_code_index
 from langgraph.graph import StateGraph, START
 from langgraph.graph.message import add_messages
 from langgraph.prebuilt import ToolNode, tools_condition
+from langgraph.checkpoint.memory import MemorySaver
 
-
+memory = MemorySaver()
 # =========================
 # OpenAI API Key
 # =========================
@@ -301,4 +302,4 @@ workflow.add_conditional_edges(
 )
 workflow.add_edge("tools", "agent")
 
-agent_graph = workflow.compile()
+agent_graph = workflow.compile(checkpointer=memory)

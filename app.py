@@ -37,11 +37,21 @@ if st.button("Ask Agent", type="primary"):
     else:
         with st.spinner("Agent is researching GitHub..."):
 
-            result = backend.agent_graph.invoke({
-                "messages": [
-                    HumanMessage(content=question)
-                ]
-            })
+            if "thread_id" not in st.session_state:
+                st.session_state.thread_id = "streamlit-user-1"
+
+            result = backend.agent_graph.invoke(
+                {
+                    "messages": [
+                        HumanMessage(content=question)
+                    ]
+                },
+                config={
+                    "configurable": {
+                        "thread_id": st.session_state.thread_id
+                    }
+                }
+            )
 
         answer = result["messages"][-1].content
 
