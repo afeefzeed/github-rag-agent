@@ -49,15 +49,24 @@ llm = ChatOpenAI(
 # GitHub API
 # =========================
 
-def get_commit_history(repo_url, limit=5):
+def get_commit_history(repo_url, limit=5,path=None):
     repo_path = repo_url.rstrip("/").replace(
         "https://github.com/", ""
     )
 
+
     url = f"https://api.github.com/repos/{repo_path}/commits"
 
-    response = requests.get(url, timeout=10)
+    params = {"per_page": limit}
 
+    if path:
+        params["path"] = path
+
+    response = requests.get(
+        url,
+        params=params,
+        timeout=10,
+    )
     if response.status_code != 200:
         return {"error": response.text}
 
