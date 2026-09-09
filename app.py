@@ -19,22 +19,35 @@ st.write(
 )
 
 
-question = st.text_area(
-    "Ask your question:",
-    placeholder=(
-        "Example: Find a Python framework for AI agents "
-        "and show me its 5 most recent commits."
-    ),
-    height=120
+# Initialize visible chat history
+if "chat_history" not in st.session_state:
+    st.session_state.chat_history = []
+
+
+# Display previous conversation
+for message in st.session_state.chat_history:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
+
+question = st.chat_input(
+    "Ask a question about GitHub repositories..."
 )
 
 
-if st.button("Ask Agent", type="primary"):
+if question:
 
-    if not question.strip():
-        st.warning("Please enter a question.")
+    # Display user's new question
+    with st.chat_message("user"):
+        st.markdown(question)
 
-    else:
+    # Save user's question to visible history
+    st.session_state.chat_history.append({
+        "role": "user",
+        "content": question
+    })
+
+    with st.chat_message("assistant"):
         with st.spinner("Agent is researching GitHub..."):
 
             if "thread_id" not in st.session_state:
@@ -53,10 +66,15 @@ if st.button("Ask Agent", type="primary"):
                 }
             )
 
-        answer = result["messages"][-1].content
+            answer = result["messages"][-1].content
 
-        st.subheader("Answer")
         st.markdown(answer)
+
+    # Save assistant's answer to visible history
+    st.session_state.chat_history.append({
+        "role": "assistant",
+        "content": answer
+    })
 
 
 st.divider()
