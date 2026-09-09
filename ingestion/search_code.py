@@ -131,7 +131,18 @@ def search_code(
     exact_matches = find_exact_symbol(vectorstore, symbols)
 
     if exact_matches:
-        return exact_matches
+        return [
+            {
+                "code": result["code"],
+                "metadata": {
+                    **result["metadata"],
+                    "repository": result["metadata"].get("repository", ""),
+                    "file_path": result["metadata"].get("file_path", ""),
+                    "name": result["metadata"].get("name", ""),
+                },
+            }
+            for result in exact_matches
+        ]
 
     results = vectorstore.similarity_search_with_score(query, k=top_k)
 

@@ -289,16 +289,77 @@ class AgentState(TypedDict):
     active_function: str
 
 
+
 def agent_node(state: AgentState):
     response = llm_with_tools.invoke(state["messages"])
-    return {"messages": [response]}
+
+    active_repo = state.get("active_repo", "")
+    active_file = state.get("active_file", "")
+    active_function = state.get("active_function", "")
+
+    for message in reversed(state["messages"]):
+        if hasattr(message, "name") and message.name == "search_code":
+            try:
+                result = message.content
+                if isinstance(result, list) and result:
+                    metadata = result[0].get("metadata", {})
+                    active_repo = metadata.get("repository", active_repo)
+                    active_file = metadata.get("file_path", active_file)
+                    active_function = metadata.get("name", active_function)
+            except Exception:
+                pass
+            break
+
+    return {
+        "messages": [response],
+        "active_repo": active_repo,
+        "active_file": active_file,
+        "active_function": active_function,
+    }
 
 
 workflow = StateGraph(AgentState)
-
 workflow.add_node("agent", agent_node)
-workflow.add_node("tools", ToolNode(tools))
 
+tool_node = ToolNode(tools)
+
+def tools_node(state: AgentState):
+    result = tool_node.invoke(state)
+
+    active_repo = state.get("active_repo", "")
+    active_file = state.get("active_file", "")
+    active_function = state.get("active_function", "")
+
+    for message in reversed(result["messages"]):
+        if getattr(message, "name", "") == "search_code":
+            try:
+                
+                import json
+
+                content = message.content
+
+                if isinstance(content, str):
+                    content = json.loads(content)
+
+                if isinstance(content, list) and content:
+                    metadata = content[0].get("metadata", {})
+
+                    active_repo = metadata.get("repository", active_repo)
+                    active_file = metadata.get("file_path", active_file)
+                    active_function = metadata.get("name", active_function)
+            except Exception:
+                pass
+
+            break
+
+    return {
+        "messages": result["messages"],
+        "active_repo": active_repo,
+        "active_file": active_file,
+        "active_function": active_function,
+    }
+
+workflow.add_node("tools", tools_node)
 workflow.add_edge(START, "agent")
 workflow.add_conditional_edges(
     "agent",
