@@ -281,8 +281,12 @@ tools = [
 llm_with_tools = llm.bind_tools(tools)
 
 
+
 class AgentState(TypedDict):
     messages: Annotated[list, add_messages]
+    active_repo: str
+    active_file: str
+    active_function: str
 
 
 def agent_node(state: AgentState):

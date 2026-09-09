@@ -57,7 +57,10 @@ if question:
                 {
                     "messages": [
                         HumanMessage(content=question)
-                    ]
+                    ],
+                    "active_repo": "",
+                    "active_file": "",
+                    "active_function": ""
                 },
                 config={
                     "configurable": {
