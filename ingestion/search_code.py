@@ -1,4 +1,5 @@
 import os
+import re
 from collections import defaultdict
 
 from langchain_openai import OpenAIEmbeddings
@@ -11,6 +12,43 @@ COLLECTION_NAME = "code_chunks"
 RETRIEVAL_K = 15
 FINAL_ENTITIES = 2
 
+def extract_symbols(query: str) -> list[str]:
+    """Extract likely Python function/class symbols from a user query."""
+    tokens = re.findall(
+        r"\b[A-Za-z_][A-Za-z0-9_]*\b",
+        query
+    )
+
+    symbols = []
+
+    for token in tokens:
+        if "_" in token or (
+            any(char.isupper() for char in token[1:])
+        ):
+            symbols.append(token)
+
+    return symbols
+
+def find_exact_symbol(vectorstore, symbols: list[str]) -> list[dict]:
+    """Find exact function or class name matches in the code index."""
+    matches = []
+
+    for symbol in symbols:
+        results = vectorstore.get(
+            where={"name": symbol},
+            include=["documents", "metadatas"],
+        )
+
+        for document, metadata in zip(
+            results["documents"],
+            results["metadatas"],
+        ):
+            matches.append({
+                "code": document,
+                "metadata": metadata,
+            })
+
+    return matches
 
 def structural_multiplier(metadata: dict) -> float:
     """Return a moderate structural relevance multiplier."""
@@ -87,13 +125,20 @@ def search_code(
 
     # Retrieve a larger candidate pool together with
     # Chroma similarity distances.
-    results = vectorstore.similarity_search_with_score(
-        query,
-        k=top_k,
-    )
+    
+    symbols = extract_symbols(query)
+
+    exact_matches = find_exact_symbol(vectorstore, symbols)
+
+    if exact_matches:
+        return exact_matches
+
+    results = vectorstore.similarity_search_with_score(query, k=top_k)
 
     if not results:
         return []
+    
+
 
     # Group retrieved chunks into logical entities.
     entities = defaultdict(list)
@@ -290,3 +335,5 @@ if __name__ == "__main__":
             result["code"][:500]
         )
         print()
+
+        
